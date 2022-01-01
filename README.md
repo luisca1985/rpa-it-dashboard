@@ -1,8 +1,11 @@
 # Results Report - RPA Challenge - IT Dashboard
 
 ## Index
+- [Previous Information](#previous-information)
+- [Local VS CodeVisual Studio](#local-vs-codeVisual-studio)
+- [Robocloud](#robocloud)
 
-## Pre
+## Previous Information
 - [RPA Challenge - IT Dashboard](https://thoughtfulautomation.notion.site/RPA-Challenge-IT-Dashboard-ec59bc2659e64323a7af99fcd4d24c21)
 - [Robot structure & configuration](https://robocorp.com/docs/setup/robot-structure)
 - [RPA Development Environment](https://robocorp.com/docs/setup/development-environment)
