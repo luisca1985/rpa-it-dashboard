@@ -11,19 +11,25 @@
 ## Local VS CodeVisual Studio
 
 ### Run Robot
-![run robot image](readmepicks/01-run-robot.png)
+![run robot image](readmepicks/00-run-robot.png)
 
 ### Get a list of agencies
-![Get a list of agencies image](readmepicks/02-get-a-list-of-agencies.png)
+![Get a list of agencies image](readmepicks/01-get-a-list-of-agencies.png)
 
 ### Select one of the agencies
-![Select one of the agencies image](readmepicks/03-select-one-of-the-agencies.png)
+![Select one of the agencies image](readmepicks/02-select-one-of-the-agencies.png)
 
 ### Agency Individual Investments
-![Agency Individual Investments image](readmepicks/04-agency-individual-investments.png)
+![Agency Individual Investments image](readmepicks/03-agency-individual-investments.png)
 
 ### Business Case
-![Business Case image](readmepicks/05-business-case.png)
+![Business Case image](readmepicks/04-business-case.png)
+
+### Output Files
+![Output files image](readmepicks/05-output-files.png)
+
+![Output files 2 image](readmepicks/05-output-files-2.png)
+
 
 ## Robocloud
 
