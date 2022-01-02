@@ -6,27 +6,74 @@
 - [Robocloud](#robocloud)
 
 ## Previous Information
+To understand the development, you must previously access the following links:
 - [RPA Challenge - IT Dashboard](https://thoughtfulautomation.notion.site/RPA-Challenge-IT-Dashboard-ec59bc2659e64323a7af99fcd4d24c21)
 - [Robot structure & configuration](https://robocorp.com/docs/setup/robot-structure)
 - [RPA Development Environment](https://robocorp.com/docs/setup/development-environment)
 - [Robocloud](https://cloud.robocorp.com/)
 
 ## Local VS CodeVisual Studio
+To run the process in local you could use Visual Studio Code with Robocorp extensions or the Robocorp Lab IDE as an RPA Development Environment.
 
 ### Run Robot
+Run the robot.
+
 ![run robot image](readmepicks/00-run-robot.png)
 
 ### Get a list of agencies
+The robot will get a list of agencies, which will later save in an Excel sheet.
+
+For this we carry out the following steps. We:
+
+- Create (if it does not exist) an 'output' directory within which the Excel file is created.
+- Create (or open if it is already created) the Excel file to save the agencies list.
+- Open the [IT Dashboard](https://itdashboard.gov/).
+- Wait until the __DIV IN__ button is available.
+- Click on the __DIV IN__ button, which displays the list of agencies.
+- Wait until the agency list is available.
+- Select the _All_ option to display the completed list.
+- Wait until all list is available.
+- Get the agencies list with the _name_, _amount_ and _link_ fields.
+- Close the website.
+- Save the agencies within the Excel file.
+
 ![Get a list of agencies image](readmepicks/01-get-a-list-of-agencies.png)
 
 ### Select one of the agencies
+Within the `env.json` file we assign the `AGENCY_NAME` to the environment variable name of the agency which we want to obtain the Individual Investments.
+
 ![Select one of the agencies image](readmepicks/02-select-one-of-the-agencies.png)
 
 ### Agency Individual Investments
+we go to the agency (`AGENCY_NAME`) page and scrape the table with all "Individual Investments" and write it to a new sheet in excel. 
+
+For this we carry out the following steps. We:
+
+- Get the link of the agency indicated in the variable `AGENCY_NAME` from the Agencies sheet in the Excel file.
+- Open the chosen agency website.
+- Get the table with the agency individual investments in html format.
+- Close the website.
+- Build the final table.
+- Save the table in the Excel file.
+
 ![Agency Individual Investments image](readmepicks/03-agency-individual-investments.png)
 
 ### Business Case
-![Business Case image](readmepicks/04-business-case.png)
+If the "**UII**" column contains a link, we open it and download PDF with Business Case.
+
+For this we carry out the following steps. We:
+
+- Get the investments from the Excel file, and filter only those that have a link.
+- Set the browser so that the downloaded pdf files are stored in the 'output' directory.
+- For each investment we get the link, and:
+  - Open the website corresponding.
+  - Wait until the link to download the pdf file is available.
+  - Click to download the pdf.
+  - Wait for it to be detected that the pdf begins to download.
+  - Wait for the pdf to be downloaded.
+  - Close the website.
+
+![local-vs-codeVisual-studioBusiness Case image](readmepicks/04-business-case.png)
 
 ### Output Files
 ![Output files image](readmepicks/05-output-files.png)
