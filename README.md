@@ -3,7 +3,25 @@
 ## Index
 - [Previous Information](#previous-information)
 - [Local VS CodeVisual Studio](#local-vs-codeVisual-studio)
+    - [Run Robot](#run-robot)
+    - [Get a list of agencies](#get-a-list-of-agencies)
+    - [Select one of the agencies](#select-one-of-the-agencies)
+    - [Agency Individual Investments](#agency-individual-investments)
+    - [Business Case](#business-case)
+    - [Output Files](#output-files)
 - [Robocloud](#robocloud)
+    - [Robots](#robots)
+    - [RPA Challenge - IT Dashboard](#rpa-challenge---it-dashboard)
+    - [Processes](#processes)
+    - [Process rpa-challange-it-dashboard](#process-rpa-challange-it-dashboard)
+    - [Configure Process - Environment Variables](#configure-process---environment-variables)
+    - [Work Data Explorer](#work-data-explorer)
+    - [Process run #6](#process-run-6)
+    - [Results](#results)
+    - [Artifacts (Outputs)](#artifacts-outputs)
+        - [Excel File - Agencies](#excel-file---agencies)
+        - [Excel File - Agency Individual Investments](#excel-file---agency-individual-investments)
+        - [Business Case PDF](#business-case-pdf)
 
 ## Previous Information
 To understand the development, you must previously access the following links:
