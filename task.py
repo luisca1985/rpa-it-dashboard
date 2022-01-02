@@ -325,6 +325,81 @@ def wait_until_download_end(directory, timeout):
         seconds += 1
 
 
+def extract_data_from_pdf():
+    """Extract "Name of this Investment" and "Unique Investment Identifier (UII)"
+    and compare this values with the columns "Investment Title" and "UII" in Excel,
+    and save the comparision in the Excel file.
+    """
+    title_and_uii_table = get_title_and_uii_table()
+    pdf_name_list = get_pdf_name_list()
+    pdf_name_and_uii_list = []
+    for pdf_name in pdf_name_list:
+        pdf_text = get_pdf_text(pdf_name)
+        pdf_name_and_uii = get_pdf_name_and_uii(pdf_text)
+        pdf_name_and_uii_list.append(pdf_name_and_uii)
+    pdf_name_and_uii_table = tables.create_table(pdf_name_and_uii_list)
+    title_and_uii_comparison = compare_pdf_and_excel_title_and_uii(
+        pdf_name_and_uii_table, title_and_uii_table)
+    save_table_in_excel(title_and_uii_comparison, 'Title and UII Comparison')
+
+
+def get_title_and_uii_table():
+    """Get a table with columns title and uii of business cases from the Excel file.
+    Only get the business cases with link, and a pdf downloaded.
+
+    :return: Business cases table with columns title and uii.
+    :rtype: Table.
+    """
+    title_and_uii_table = tables.create_table({'title': 'value'})
+    return title_and_uii_table
+
+
+def get_pdf_name_list():
+    """Get a list of the PDFs stored in the output directory ordered by date.
+
+    :return: List with name of PDFs files.
+    :rtype: List.
+    """
+    pdf_name_list = []
+    return pdf_name_list
+
+
+def get_pdf_text(pdf_name):
+    """Get the text inside a pdf file using the pdf name.
+
+    :param str Name of PDF file.
+    :return: Text of PDF file.
+    :rtype: str.
+    """
+    pdf_text = ''
+    return pdf_text
+
+
+def get_pdf_name_and_uii(pdf_text):
+    """Extract the Name and UII from a PDF text.
+
+    :param str pdf_text: PDF text.
+    :return: Dictionary with the PDF name and UII
+    :rtype: Dict.
+    """
+    pdf_name_and_uii = {'name': '', 'uii': ''}
+    return pdf_name_and_uii
+
+
+def compare_pdf_and_excel_title_and_uii(pdf_name_and_uii_table, title_and_uii_table):
+    """Compate the columns name and uii of a table with the columns title and uii 
+    of other table and insert another column with the comparison.  
+
+    :param Table pdf_name_and_uii_table: Table with PDFs names and UIIs.
+    :param Table title_and_uii_table: Table with titles and UIIs extracted from agency sheet.
+    :return: Tables with 
+    :rtype: Table.
+    """
+    title_and_uii_comparison = tables.create_table(
+        {'pdf_name': '', 'pdf_uii': '', 'title': '', 'uii': '', 'comparison': ''})
+    return title_and_uii_comparison
+
+
 # Define a main() function that calls the other functions in order:
 def main():
     """
@@ -334,6 +409,7 @@ def main():
         get_list_of_agencies_and_save_in_excel()
         get_agency_investments_and_save_in_excel()
         download_pdf_with_agency_business_case()
+        extract_data_from_pdf()
 
     finally:
         browser.close_all_browsers()
