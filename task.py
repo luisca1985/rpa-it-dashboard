@@ -282,8 +282,6 @@ def download_documents_from_urls(urls):
     """
     # Create the directory that contents the PDFs using as a name, the agency name and the datetime.
     directory = OUTPUT_DIRECTORY
-    lib.create_directory(directory)
-    lib.wait_until_created(directory, STD_TIMEOUT)
     browser.set_download_directory(
         directory=get_absolute_path_directory(directory))
     for url in urls:
