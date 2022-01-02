@@ -35,27 +35,12 @@ def get_list_of_agencies_and_save_in_excel():
     Get the list of al agencies in https://itdashboard.gov/' and
     save the data in a sheet named Agencies of an excel file.
     """
-    open_website(URL)
     create_directory(OUTPUT_DIRECTORY)
     open_or_create_excel_file(EXCEL_PATH)
+    open_website(URL)
     click_div_in()
-    locator = 'xpath://*[@id="agency-tiles-widget"]/div/div'
-    browser.wait_until_page_contains_element(locator + '[1]')
-    agencies_blocks = browser.get_webelements(locator)
-    agencies_dict = []
-    # Agencies is ordered by blocks (each block has three angencies)
-    for agencies_block in agencies_blocks:
-        agencies = agencies_block.find_elements_by_xpath('./div')
-        for agency in agencies:
-            info = agency.find_element_by_xpath('./div/div/div/div[1]/a')
-            url = info.get_attribute('href')
-            name = info.find_element_by_xpath('./span[1]').text
-            amount = info.find_element_by_xpath('./span[2]').text
-            agency_dict = {
-                "name": name.capitalize(), "amount": amount, "url": url}
-            agencies_dict.append(agency_dict)
+    agencies = get_agencies()
     close_website()
-    agencies = tables.create_table(agencies_dict)
     save_table_in_excel(agencies, sheet_name=SHEET_AGENCIES_NAME)
 
 
@@ -65,8 +50,27 @@ def create_directory(dir_name):
 
     :param str dir_name: The name of the directory.
     """
+    if lib.does_directory_exist(dir_name):
+        print(f'The directory { dir_name } already exist.')
+    else:
+        print(f'The directory { dir_name } is created.')
     lib.create_directory(dir_name)
 
+
+def open_or_create_excel_file(excel_path):
+    """
+    Open the excel file to save the spend amounts for each agency and 
+    individual investments of selected agency.
+
+    :param str excel_path: The name of excel file and path where it is located
+    """
+    try:
+        excel.open_workbook(excel_path)
+    except:
+        excel.create_workbook(excel_path)
+        print(f'The Excel file { excel_path } is created.')
+    else:
+        print(f'The Excel file { excel_path } already exist, and it is opened.')
 
 def open_website(url):
     """
@@ -84,19 +88,6 @@ def close_website():
     browser.close_browser()
 
 
-def open_or_create_excel_file(excel_path):
-    """
-    Open the excel file to save the spend amounts for each agency and 
-    individual investments of selected agency.
-
-    :param str excel_path: The name of excel file and path where it is located
-    """
-    try:
-        excel.open_workbook(excel_path)
-    except:
-        excel.create_workbook(excel_path)
-
-
 def click_div_in():
     """
     Click "DIVE IN" on the homepage to reveal the spend amounts for each agency.
@@ -104,6 +95,24 @@ def click_div_in():
     locator = 'xpath://*[@id="node-23"]/div/div/div/div/div/div/div/a'
     browser.wait_until_page_contains_element(locator)
     browser.click_element(locator)
+
+def get_agencies():
+    locator = 'xpath://*[@id="agency-tiles-widget"]/div/div'
+    browser.wait_until_page_contains_element(locator + '[1]')
+    agencies_blocks = browser.get_webelements(locator)
+    agencies_list = []
+    # Agencies is ordered by blocks (each block has three angencies)
+    for agencies_block in agencies_blocks:
+        agencies = agencies_block.find_elements_by_xpath('./div')
+        for agency in agencies:
+            info = agency.find_element_by_xpath('./div/div/div/div[1]/a')
+            url = info.get_attribute('href')
+            name = info.find_element_by_xpath('./span[1]').text
+            amount = info.find_element_by_xpath('./span[2]').text
+            agency_dict = {
+                "name": name.capitalize(), "amount": amount, "url": url}
+            agencies_list.append(agency_dict)
+    return  tables.create_table(agencies_list)
 
 
 def save_table_in_excel(table, sheet_name):
@@ -116,9 +125,12 @@ def save_table_in_excel(table, sheet_name):
     try:
         excel.remove_worksheet(name=sheet_name)
     except:
-        print(f"{ sheet_name } didn't exist.")
+        print(f"Sheet { sheet_name } don't exist.")
+    else:
+        print(f"Sheet { sheet_name } already exists, so it is removed.")
     finally:
         excel.create_worksheet(name=sheet_name, content=table, header=True)
+        print(f"A new sheet { sheet_name } is created.")
         excel.save_workbook()
 
 
