@@ -76,6 +76,8 @@ For this we carry out the following steps. We:
 ![local-vs-codeVisual-studioBusiness Case image](readmepicks/04-business-case.png)
 
 ### Output Files
+All files are store in the _output_ directory.
+
 ![Output files image](readmepicks/05-output-files.png)
 
 ![Output files 2 image](readmepicks/05-output-files-2.png)
@@ -84,22 +86,35 @@ For this we carry out the following steps. We:
 ## Robocloud
 
 ### Robots
+
+In [Robocloud](https://cloud.robocorp.com/), we create a robot with name _RPA Challenge - IT Dashboard_ uploading a .zip file including with the project.
+
 ![Robots image](readmepicks/06-robots.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/robots/12268)
 
 ### RPA Challenge - IT Dashboard
+We can edit the project using the _Edit online_ option.
+
 ![RPA Challenge IT Dashboard image](readmepicks/07-rpa-challenge---it-dashboard.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/robots/12268/edit)
 
 ### Processes
+We create a process with name _rpa-challenge-it-dashboard_, and include the robot.
+
 ![Processes image](readmepicks/08-processes.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/processes)
 
 ### Process rpa-challange-it-dashboard
+
+We link on the process.
+
 ![Process rpa-challange-it-dashboard image](readmepicks/09-process-rpa-challange-it-dashboard.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/processes/88ad44ae-3fc1-4d3d-ab1c-b87d77c35e85)
 
 ### Configure Process - Environment Variables
+
+We link on the option _Configure Process_, select _Show advanced_ and set the environment variable *AGENCY_NAME*.
+
 ![Configure Process image](readmepicks/10-configure-process.png)
 
 ![Environment Variables image](readmepicks/11-environment-variables.png)
@@ -107,10 +122,16 @@ For this we carry out the following steps. We:
 
 
 ### Work Data Explorer
+
+We _Run_ the process. Select _RPA Challenge - IT Dashboard ▸ Run Python_ and see all processes running.
+
 ![Work Data Explorer image](readmepicks/12-work-data-explorer.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/processes/88ad44ae-3fc1-4d3d-ab1c-b87d77c35e85?explorer=eyJzY29wZSI6InByb2Nlc3MiLCJwSWQiOiI4OGFkNDRhZS0zZmMxLTRkM2QtYWIxYy1iODdkNzdjMzVlODUiLCJmaWx0ZXJzIjp7ImMwMjAxNjgwLWMyMzMtNGMyZS05NmQ4LWIyNzU4ZjVjMmEwMCI6WyJOIiwiUCIsIkkiLCJGIiwiQyJdfX0%3D)
 
 ### Process run #6
+
+We select _Run #6_ and the _Step runs_ to see the results.
+
 ![Process run #6 image](readmepicks/13-process-run-6.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/processes/88ad44ae-3fc1-4d3d-ab1c-b87d77c35e85/runs/30695b33-a3a2-4562-a0cc-effbeb2c3f5e)
 
