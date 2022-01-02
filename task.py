@@ -70,7 +70,9 @@ def open_or_create_excel_file(excel_path):
         excel.create_workbook(excel_path)
         print(f'The Excel file { excel_path } is created.')
     else:
-        print(f'The Excel file { excel_path } already exist, and it is opened.')
+        print(
+            f'The Excel file { excel_path } already exist, and it is opened.')
+
 
 def open_website(url):
     """
@@ -96,6 +98,7 @@ def click_div_in():
     browser.wait_until_page_contains_element(locator)
     browser.click_element(locator)
 
+
 def get_agencies():
     locator = 'xpath://*[@id="agency-tiles-widget"]/div/div'
     browser.wait_until_page_contains_element(locator + '[1]')
@@ -112,7 +115,7 @@ def get_agencies():
             agency_dict = {
                 "name": name.capitalize(), "amount": amount, "url": url}
             agencies_list.append(agency_dict)
-    return  tables.create_table(agencies_list)
+    return tables.create_table(agencies_list)
 
 
 def save_table_in_excel(table, sheet_name):
