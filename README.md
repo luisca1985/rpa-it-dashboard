@@ -8,6 +8,7 @@
     - [Select one of the agencies](#select-one-of-the-agencies)
     - [Agency Individual Investments](#agency-individual-investments)
     - [Business Case](#business-case)
+    - [PDF Business Case and Excel Agency Investment Comparison](#pdf-business-case-and-excel-agency-investment-comparison)
     - [Output Files](#output-files)
 - [Robocloud](#robocloud)
     - [Robots](#robots)
@@ -22,6 +23,7 @@
         - [Excel File - Agencies](#excel-file---agencies)
         - [Excel File - Agency Individual Investments](#excel-file---agency-individual-investments)
         - [Business Case PDF](#business-case-pdf)
+        - [Compare PDF Business Case and Excel Agency Investment](#compare-pdf-business-case-and-excel-agency-investment)
 
 ## Previous Information
 To understand the development, you must previously access the following links:
