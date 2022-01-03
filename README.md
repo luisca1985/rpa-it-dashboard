@@ -17,7 +17,7 @@
     - [Process rpa-challange-it-dashboard](#process-rpa-challange-it-dashboard)
     - [Configure Process - Environment Variables](#configure-process---environment-variables)
     - [Work Data Explorer](#work-data-explorer)
-    - [Process run #6](#process-run-6)
+    - [Process run](#process-run)
     - [Results](#results)
     - [Artifacts (Outputs)](#artifacts-outputs)
         - [Excel File - Agencies](#excel-file---agencies)
