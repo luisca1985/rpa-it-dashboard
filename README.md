@@ -161,9 +161,9 @@ We _Run_ the process. Select _RPA Challenge - IT Dashboard ▸ Run Python_ and s
 ![Work Data Explorer image](readmepicks/12-work-data-explorer.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/processes/88ad44ae-3fc1-4d3d-ab1c-b87d77c35e85?explorer=eyJzY29wZSI6InByb2Nlc3MiLCJwSWQiOiI4OGFkNDRhZS0zZmMxLTRkM2QtYWIxYy1iODdkNzdjMzVlODUiLCJmaWx0ZXJzIjp7ImMwMjAxNjgwLWMyMzMtNGMyZS05NmQ4LWIyNzU4ZjVjMmEwMCI6WyJOIiwiUCIsIkkiLCJGIiwiQyJdfX0%3D)
 
-### Process run #6
+### Process run
 
-We select _Run #6_ and the _Step runs_ to see the results.
+We select _Run #_ and the _Step runs_ to see the results.
 
 ![Process run #6 image](readmepicks/13-process-run-6.png)
 [Go to the web page](https://cloud.robocorp.com/thefunctionaryfxi1h/luisjimenez/processes/88ad44ae-3fc1-4d3d-ab1c-b87d77c35e85/runs/30695b33-a3a2-4562-a0cc-effbeb2c3f5e)
