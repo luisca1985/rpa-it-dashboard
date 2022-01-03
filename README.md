@@ -93,6 +93,19 @@ For this we carry out the following steps. We:
 
 ![local-vs-codeVisual-studioBusiness Case image](readmepicks/04-business-case.png)
 
+
+#### PDF Business Case and Excel Agency Investment Comparison
+We extract "Name of this Investment" and "Unique Investment Identifier (UII)" and compare this values with the columns "Investment Title" and "UII" in Excel, and save the comparison in the Excel file.
+
+For this we carry out the following steps. We:
+
+- Get a list with columns title and uii of business cases from the Excel file.
+- Get a list of the PDFs stored in the output directory ordered by date.
+- Get the text inside the first page of a pdf file.
+- Extract the Name and UII from a PDF text
+- Compare the name and uii keys of the pdf file list with the title and uii keys of the excel list, and insert another key with the comparison.  
+- Save the comparison in the Excel file.
+
 ### Output Files
 All files are store in the _output_ directory.
 
@@ -172,3 +185,7 @@ We select _Run #6_ and the _Step runs_ to see the results.
 #### Business Case PDF
 
 ![Business Case PDF image](readmepicks/18-business-case-pdf.png)
+
+#### Compare PDF Business Case and Excel Agency Investment
+
+![Business Case PDF image](readmepicks/19-compare-pdf-business-case-and-excel-agency-investment.png)
