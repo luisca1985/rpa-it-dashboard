@@ -4,6 +4,7 @@ from RPA.Browser.Selenium import Selenium
 from RPA.Excel.Files import Files
 from RPA.Tables import Tables
 from RPA.FileSystem import FileSystem
+from RPA.PDF import PDF
 from bs4 import BeautifulSoup
 
 # Get the name of the agency selected.
@@ -23,11 +24,22 @@ URL = 'https://itdashboard.gov/'
 STD_TIMEOUT = 180
 UII_URL_NAME = 'UII_URL'
 EMPTY_UII_URL = '--'
+NAME_INVESTMENT_LOCATOR = '1. Name of this Investment: '
+UII_LOCATOR = '2. Unique Investment Identifier (UII): '
 
 browser = Selenium()
 excel = Files()
 tables = Tables()
 lib = FileSystem()
+pdf = PDF()
+
+
+def initial_configuration():
+    """ Configurate the minimal configuration
+    to run the processes.
+    """
+    create_directory(OUTPUT_DIRECTORY)
+    open_or_create_excel_file(EXCEL_PATH)
 
 
 def get_list_of_agencies_and_save_in_excel():
@@ -35,8 +47,7 @@ def get_list_of_agencies_and_save_in_excel():
     Get the list of al agencies in https://itdashboard.gov/' and
     save the data in a sheet named Agencies of an excel file.
     """
-    create_directory(OUTPUT_DIRECTORY)
-    open_or_create_excel_file(EXCEL_PATH)
+
     open_website(URL)
     click_div_in()
     agencies = get_agencies()
@@ -325,19 +336,113 @@ def wait_until_download_end(directory, timeout):
         seconds += 1
 
 
+def extract_data_from_pdf():
+    """Extract "Name of this Investment" and "Unique Investment Identifier (UII)"
+    and compare this values with the columns "Investment Title" and "UII" in Excel,
+    and save the comparison in the Excel file.
+    """
+    title_and_uii_list = get_title_and_uii_list()
+    pdf_list = get_pdf_list()
+    pdf_name_and_uii_list = []
+    for pdf_file in pdf_list:
+        pdf_text = get_page_1_pdf_text(pdf_file)
+        pdf_name_and_uii = get_pdf_name_and_uii(pdf_text)
+        pdf_name_and_uii_list.append(pdf_name_and_uii)
+    title_and_uii_comparison = compare_pdf_and_excel_title_and_uii(
+        pdf_name_and_uii_list, title_and_uii_list)
+    save_table_in_excel(title_and_uii_comparison, 'Title and UII Comparison')
+
+
+def get_title_and_uii_list():
+    """Get a list with columns title and uii of business cases from the Excel file.
+    Only get the business cases with link, and a pdf downloaded.
+
+    :return: Business cases list of dict with title and uii keys.
+    :rtype: List of dict.
+    """
+    excel.read_worksheet(AGENCY_NAME.capitalize())
+    data = excel.read_worksheet_as_table(header=True)
+    tables.filter_table_by_column(data, UII_URL_NAME, '!=', EMPTY_UII_URL)
+    title_and_uii_list = [{'title': title, 'uii': uii} for title, uii in zip(
+        tables.get_table_column(data, 'Investment Title'), tables.get_table_column(data, 'UII'))]
+    return title_and_uii_list
+
+
+def get_pdf_list():
+    """Get a list of the PDFs stored in the output directory ordered by date.
+
+    :return: List with PDFs Files.
+    :rtype: list of File.
+    """
+
+    pdf_list = lib.find_files(f"{ OUTPUT_DIRECTORY }/*.pdf")
+    pdf_list.sort(key=lambda x: x.mtime, reverse=False)
+    return pdf_list
+
+
+def get_page_1_pdf_text(pdf_file):
+    """Get the text inside the first page of a pdf file.
+
+    :param File pdf: Name of PDF file.
+    :return: Text of PDF file.
+    :rtype: str.
+    """
+    pdf_text = pdf.get_text_from_pdf(pdf_file.path)
+    return pdf_text[1]
+
+
+def get_pdf_name_and_uii(pdf_text):
+    """Extract the Name and UII from a PDF text.
+
+    :param str pdf_text: PDF text.
+    :return: Dictionary with the PDF name and UII
+    :rtype: Dict.
+    """
+    section_a_index = pdf_text.find('Section A:')
+    section_b_index = pdf_text.find('Section B:')
+    section_a_text = pdf_text[section_a_index:section_b_index]
+    name_start = section_a_text.find(
+        NAME_INVESTMENT_LOCATOR) + len(NAME_INVESTMENT_LOCATOR)
+    name_end = section_a_text.find(UII_LOCATOR)
+    uii_right_index = section_a_text.find(UII_LOCATOR) + len(UII_LOCATOR)
+    name_text = section_a_text[name_start:name_end]
+    uii_text = section_a_text[uii_right_index:]
+    pdf_name_and_uii = {'pdf_name': name_text, 'pdf_uii': uii_text}
+    return pdf_name_and_uii
+
+
+def compare_pdf_and_excel_title_and_uii(pdf_name_and_uii_list, title_and_uii_list):
+    """Compare the name and uii keys of the pdf file list with the title and uii keys 
+    of the excel list, and insert another key with the comparison.  
+
+    :param list pdf_name_and_uii_list: List of directories with PDFs names and UIIs keys.
+    :param list title_and_uii_list: List with titles and UIIs keys extracted from agency sheet.
+    :return: Tables with 
+    :rtype: Table.
+    """
+    title_and_uii_comparison = [{**excel_item, **pdf_item, 'comparison title': excel_item['title'] == pdf_item['pdf_name'],
+                                 'comparison uii': excel_item['uii'] == pdf_item['pdf_uii']} for excel_item, pdf_item in zip(title_and_uii_list, pdf_name_and_uii_list)]
+    title_and_uii_comparison_table = tables.create_table(
+        title_and_uii_comparison)
+    return title_and_uii_comparison_table
+
+
 # Define a main() function that calls the other functions in order:
 def main():
     """
     Define a main() function that calls the other functions in order:
     """
     try:
+        initial_configuration()
         get_list_of_agencies_and_save_in_excel()
         get_agency_investments_and_save_in_excel()
         download_pdf_with_agency_business_case()
+        extract_data_from_pdf()
 
     finally:
         browser.close_all_browsers()
         excel.close_workbook()
+        pdf.close_all_pdfs()
 
 
 # Call the main() function, checking that we are running as a stand-alone script:
