@@ -5,7 +5,6 @@ from RPA.Excel.Files import Files
 from RPA.Tables import Tables
 from RPA.FileSystem import FileSystem
 from RPA.PDF import PDF
-from robot.libraries.String import String
 from bs4 import BeautifulSoup
 
 # Get the name of the agency selected.
@@ -33,7 +32,6 @@ excel = Files()
 tables = Tables()
 lib = FileSystem()
 pdf = PDF()
-string = String()
 
 
 def initial_configuration():
@@ -341,7 +339,7 @@ def wait_until_download_end(directory, timeout):
 def extract_data_from_pdf():
     """Extract "Name of this Investment" and "Unique Investment Identifier (UII)"
     and compare this values with the columns "Investment Title" and "UII" in Excel,
-    and save the comparision in the Excel file.
+    and save the comparison in the Excel file.
     """
     title_and_uii_list = get_title_and_uii_list()
     pdf_list = get_pdf_list()
@@ -356,11 +354,11 @@ def extract_data_from_pdf():
 
 
 def get_title_and_uii_list():
-    """Get a table with columns title and uii of business cases from the Excel file.
+    """Get a list with columns title and uii of business cases from the Excel file.
     Only get the business cases with link, and a pdf downloaded.
 
-    :return: Business cases table with columns title and uii.
-    :rtype: Table.
+    :return: Business cases list of dict with title and uii keys.
+    :rtype: List of dict.
     """
     excel.read_worksheet(AGENCY_NAME.capitalize())
     data = excel.read_worksheet_as_table(header=True)
@@ -414,17 +412,18 @@ def get_pdf_name_and_uii(pdf_text):
 
 
 def compare_pdf_and_excel_title_and_uii(pdf_name_and_uii_list, title_and_uii_list):
-    """Compate the columns name and uii of a table with the columns title and uii 
-    of other table and insert another column with the comparison.  
+    """Compare the name and uii keys of the pdf file list with the title and uii keys 
+    of the excel list, and insert another key with the comparison.  
 
-    :param Table pdf_name_and_uii_table: Table with PDFs names and UIIs.
-    :param Table title_and_uii_table: Table with titles and UIIs extracted from agency sheet.
+    :param list pdf_name_and_uii_list: List of directories with PDFs names and UIIs keys.
+    :param list title_and_uii_list: List with titles and UIIs keys extracted from agency sheet.
     :return: Tables with 
     :rtype: Table.
     """
     title_and_uii_comparison = [{**excel_item, **pdf_item, 'comparison title': excel_item['title'] == pdf_item['pdf_name'],
                                  'comparison uii': excel_item['uii'] == pdf_item['pdf_uii']} for excel_item, pdf_item in zip(title_and_uii_list, pdf_name_and_uii_list)]
-    title_and_uii_comparison_table = tables.create_table(title_and_uii_comparison)
+    title_and_uii_comparison_table = tables.create_table(
+        title_and_uii_comparison)
     return title_and_uii_comparison_table
 
 
