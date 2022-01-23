@@ -17,7 +17,7 @@ else:
         f'AGENCY_NAME was configured successfully, its values is: { AGENCY_NAME }')
 
 OUTPUT_DIRECTORY = 'output'
-EXCEL_PATH = OUTPUT_DIRECTORY + '/agencies.xlsx'
+EXCEL_FILE_NAME = 'agencies.xlsx'
 SHEET_AGENCIES_NAME = 'Agencies'
 URL = 'https://itdashboard.gov/'
 STD_TIMEOUT = 180
@@ -38,7 +38,7 @@ def initial_configuration():
     to run the processes.
     """
     create_directory(OUTPUT_DIRECTORY)
-    open_or_create_excel_file(EXCEL_PATH)
+    open_or_create_excel_file(os.path.join(OUTPUT_DIRECTORY, EXCEL_FILE_NAME))
 
 
 def get_list_of_agencies_and_save_in_excel():
@@ -239,7 +239,7 @@ def read_table_from_element(table_element, table_header_element):
     for index, th_element in enumerate(th_header_elements):
         table_header.append(th_element.text)
         if index == 0:
-                    table_header.append(UII_URL_NAME)
+            table_header.append(UII_URL_NAME)
     
     # Get table data and include it in a list.
     tr_table_locator = './/tbody/tr[@role="row"]'
@@ -277,8 +277,7 @@ def download_documents_from_urls(urls):
     """
     # Create the directory that contents the PDFs using as a name, the agency name and the datetime.
     directory = OUTPUT_DIRECTORY
-    browser.set_download_directory(
-        directory=get_absolute_path_directory(directory))
+    browser.set_download_directory(directory=get_absolute_path_directory(directory))
     for url in urls:
         open_website(url)
         # Wait until page contains the button to download the pdf.
@@ -300,7 +299,7 @@ def get_absolute_path_directory(relative_path_directory):
     :return: Absolute path.
     :rtype: str.
     """
-    return os.getcwd() + '/' + relative_path_directory
+    return os.path.join(os.getcwd(), relative_path_directory)
 
 
 def wait_until_download_end(directory, timeout):
@@ -313,7 +312,7 @@ def wait_until_download_end(directory, timeout):
     seconds = 0
     while seconds < timeout:
         time.sleep(1)
-        if not lib.find_files(directory + "/*.*download"):
+        if not lib.find_files(os.path.join(directory,"*.*download")):
             break
         seconds += 1
 
@@ -357,7 +356,7 @@ def get_pdf_list():
     :rtype: list of File.
     """
 
-    pdf_list = lib.find_files(f"{ OUTPUT_DIRECTORY }/*.pdf")
+    pdf_list = lib.find_files(os.path.join(OUTPUT_DIRECTORY, "*.pdf"))
     pdf_list.sort(key=lambda x: x.mtime, reverse=False)
     return pdf_list
 
@@ -383,8 +382,7 @@ def get_pdf_name_and_uii(pdf_text):
     section_a_index = pdf_text.find('Section A:')
     section_b_index = pdf_text.find('Section B:')
     section_a_text = pdf_text[section_a_index:section_b_index]
-    name_start = section_a_text.find(
-        NAME_INVESTMENT_LOCATOR) + len(NAME_INVESTMENT_LOCATOR)
+    name_start = section_a_text.find(NAME_INVESTMENT_LOCATOR) + len(NAME_INVESTMENT_LOCATOR)
     name_end = section_a_text.find(UII_LOCATOR)
     uii_right_index = section_a_text.find(UII_LOCATOR) + len(UII_LOCATOR)
     name_text = section_a_text[name_start:name_end]
