@@ -104,24 +104,24 @@ def click_div_in():
     """
     Click "DIVE IN" on the homepage to reveal the spend amounts for each agency.
     """
-    locator = 'xpath://*[@id="node-23"]/div/div/div/div/div/div/div/a'
-    browser.wait_until_page_contains_element(locator)
+
+    locator = 'xpath://a[@href="#home-dive-in"]'
+    browser.wait_until_page_contains_element(locator, STD_TIMEOUT )
     browser.click_element(locator)
 
 
 def get_agencies():
-    locator = 'xpath://*[@id="agency-tiles-widget"]/div/div'
+    locator = 'xpath://div[@id="agency-tiles-widget"]/div/div[contains(@class, "row")]'
     browser.wait_until_page_contains_element(locator + '[1]')
     agencies_blocks = browser.get_webelements(locator)
     agencies_list = []
     # Agencies is ordered by blocks (each block has three angencies)
     for agencies_block in agencies_blocks:
-        agencies = agencies_block.find_elements_by_xpath('./div')
+        agencies = agencies_block.find_elements_by_xpath('.//div[@class="tuck-5"]')
         for agency in agencies:
-            info = agency.find_element_by_xpath('./div/div/div/div[1]/a')
-            url = info.get_attribute('href')
-            name = info.find_element_by_xpath('./span[1]').text
-            amount = info.find_element_by_xpath('./span[2]').text
+            url = agency.find_element_by_xpath('.//a').get_attribute('href')
+            name = agency.find_element_by_xpath('.//span[contains(@class, "h4") and contains(@class, "w200")]').text
+            amount = agency.find_element_by_xpath('.//span[contains(@class, "h1") and contains(@class, "w900")]').text
             agency_dict = {
                 "name": name.capitalize(), "amount": amount, "url": url}
             agencies_list.append(agency_dict)
@@ -201,11 +201,10 @@ def get_table_element_from_url():
     :return: WebElements of tables with data and header.
     :rtype: (WebElement, WebElement).
     """
-    table_id = 'investments-table-object'
-    selection_locator = f'css:#{ table_id }_length > label > select'
-    table_header_locator = f'css:#{ table_id }_wrapper > div.dataTables_scroll > div.dataTables_scrollHead > div > table'
-    table_locator = f'css:#{ table_id }'
-    paginate_locator_2 = f'xpath://*[@id="{ table_id }_paginate"]/span/a[2]'
+    selection_locator = f'xpath://select[@name="investments-table-object_length"]'
+    table_header_locator = f'xpath://div[@id="investments-table-object_wrapper"]//div[@class="dataTables_scrollHead"]//table'
+    table_locator = f'xpath://table[@id="investments-table-object"]'
+    paginate_locator_2 = f'xpath://div[@id="investments-table-object_paginate"]//a[not(contains(@class, "disabled")) and @data-dt-idx="3"]'
     # wait until selection component is available
     browser.wait_until_page_contains_element(selection_locator, STD_TIMEOUT)
     # wait until paginate 2 is available
@@ -234,7 +233,6 @@ def read_table_from_element(table_element, table_header_element):
     table_header = []
     table_rows = []
 
-    print(type(table_element))
     # Get table header and include it in a list.
     th_header_locator = './/tr[@role="row"]/th'
     th_header_elements = table_header_element.find_elements_by_xpath(th_header_locator)
@@ -285,8 +283,9 @@ def download_documents_from_urls(urls):
         open_website(url)
         # Wait until page contains the button to download the pdf.
         browser.wait_until_page_contains_element(
-            'css:#business-case-pdf > a', STD_TIMEOUT)
-        browser.click_element('css:#business-case-pdf > a')
+            'xpath://div[@id="business-case-pdf"]/a', STD_TIMEOUT)
+            
+        browser.click_element('xpath://div[@id="business-case-pdf"]/a')
         # Wait until pdf starts to download.
         lib.wait_until_modified(directory, STD_TIMEOUT)
         # Wait until pdf finishes to download.
