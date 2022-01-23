@@ -5,7 +5,6 @@ from RPA.Excel.Files import Files
 from RPA.Tables import Tables
 from RPA.FileSystem import FileSystem
 from RPA.PDF import PDF
-from bs4 import BeautifulSoup
 
 # Get the name of the agency selected.
 try:
@@ -420,8 +419,8 @@ def main():
         initial_configuration()
         get_list_of_agencies_and_save_in_excel()
         get_agency_investments_and_save_in_excel()
-        # download_pdf_with_agency_business_case()
-        # extract_data_from_pdf()
+        download_pdf_with_agency_business_case()
+        extract_data_from_pdf()
 
     finally:
         browser.close_all_browsers()
