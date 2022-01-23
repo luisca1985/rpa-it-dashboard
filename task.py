@@ -5,7 +5,6 @@ from RPA.Excel.Files import Files
 from RPA.Tables import Tables
 from RPA.FileSystem import FileSystem
 from RPA.PDF import PDF
-from bs4 import BeautifulSoup
 
 # Get the name of the agency selected.
 try:
@@ -157,10 +156,11 @@ def get_agency_investments_and_save_in_excel():
         SHEET_AGENCIES_NAME, 'name', '==', AGENCY_NAME.capitalize())
     urls_agency = get_urls_from_table(agency, 'url')
     open_website(urls_agency[0])
-    html_table_agency, html_table_header_agency = get_table_html_from_url()
+    
+    table_element_agency, table_header_element_agency = get_table_element_from_url()
+    table_agency = read_table_from_element(table_element_agency, table_header_element_agency)
+
     close_website()
-    table_agency = read_table_from_html(
-        html_table_agency, html_table_header_agency)
     save_table_in_excel(table_agency, sheet_name=AGENCY_NAME.capitalize())
 
 
@@ -194,13 +194,12 @@ def get_urls_from_table(table, url_column_name='url'):
     """
     return tables.get_table_column(table, url_column_name)
 
-
-def get_table_html_from_url():
+def get_table_element_from_url():
     """
-    Get a HTML table with all "Individual Investments". 
+    Get the table elements with all "Individual Investments". 
 
-    :return: HTML source of tables with data and header.
-    :rtype: str.
+    :return: WebElements of tables with data and header.
+    :rtype: (WebElement, WebElement).
     """
     table_id = 'investments-table-object'
     selection_locator = f'css:#{ table_id }_length > label > select'
@@ -219,65 +218,49 @@ def get_table_html_from_url():
     # wait until table header is available
     browser.wait_until_page_contains_element(table_header_locator, STD_TIMEOUT)
     table_header_element = browser.get_webelement(table_header_locator)
-    table_header_html = table_header_element.get_attribute('innerHTML')
     # wait until table is available
     browser.wait_until_page_contains_element(table_locator, STD_TIMEOUT)
     table_element = browser.get_webelement(table_locator)
-    table_html = table_element.get_attribute('innerHTML')
-    # print(table_header_html)
-    return table_html, table_header_html
+    return table_element, table_header_element
 
+def read_table_from_element(table_element, table_header_element):
+    """Parses and returns the given element tables as a Table structured.
 
-def read_table_from_html(html_table, html_table_header):
-    """Parses and returns the given HTML tables as a Table structured.
-
-    :param str html_table: Table HTML markup.
-    :param str html_table_header: Header of table HTML markup.
+    :param WebElement table_element: Table web element.
+    :param WebElement table_header_element: Header of table web element.
     :return: Table structured.
     :rtype: Table.
     """
-    table_header_rows = []
+    table_header = []
     table_rows = []
-    table_header = BeautifulSoup(html_table_header, "html.parser")
-    table = BeautifulSoup(html_table, "html.parser")
 
+    print(type(table_element))
     # Get table header and include it in a list.
-    for table_row in table_header.select('tr'):
-        cells = table_row.find_all('th')
-
-        if len(cells) > 0:
-            cell_values = []
-
-            for index, cell in enumerate(cells):
-                cell_values.append(cell.text.strip())
-                if index == 0:
-                    cell_values.append(UII_URL_NAME)
-
-            table_header_rows.append(cell_values)
-
+    th_header_locator = './/tr[@role="row"]/th'
+    th_header_elements = table_header_element.find_elements_by_xpath(th_header_locator)
+    for index, th_element in enumerate(th_header_elements):
+        table_header.append(th_element.text)
+        if index == 0:
+                    table_header.append(UII_URL_NAME)
+    
     # Get table data and include it in a list.
-    for table_row in table.select('tr'):
-        cells = table_row.find_all('td')
-
-        if len(cells) > 0:
-            cell_values = []
-
-            for index, cell in enumerate(cells):
-                cell_values.append(cell.text.strip())
-                if index == 0:
-                    try:
-                        cell_values.append(URL + cell.find('a')['href'])
-                    except:
-                        cell_values.append(EMPTY_UII_URL)
-
-            table_rows.append(cell_values)
-
-    # Delete unnecessary rows
-    table_rows.pop(0)
+    tr_table_locator = './/tbody/tr[@role="row"]'
+    tr_table_elements = table_element.find_elements_by_xpath(tr_table_locator)
+    for tr_index, tr_element in enumerate(tr_table_elements):
+        td_locator = './td'
+        td_elements = tr_element.find_elements_by_xpath(td_locator)
+        td_values = []
+        for td_index, td_element in enumerate(td_elements):
+            td_values.append(td_element.text)
+            if td_index == 0:
+                try:
+                    td_values.append(td_element.find_element_by_xpath('./a').get_attribute("href"))
+                except:
+                    td_values.append(EMPTY_UII_URL)
+        table_rows.append(td_values)
 
     # Create a table from lists
-    return tables.create_table(data=table_rows, columns=table_header_rows[0])
-
+    return tables.create_table(data=table_rows, columns=table_header)
 
 def download_pdf_with_agency_business_case():
     """If the "UII" column contains a link, open it and download PDF with 
